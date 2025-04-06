@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Fullstack app (todoapp)" type="CompoundRunConfigurationType">
+    <toRun name="todoapp" type="Application" />
+    <toRun name="React Frontend" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

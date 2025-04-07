@@ -19,6 +19,9 @@ Ziel: Aufgaben erfassen, verwalten und den Status ändern
 - 🐘 PostgreSQL (via Docker)
 - 🐳 Docker & Docker Compose
 
+![image](https://github.com/user-attachments/assets/17d8d65f-5ef6-468c-8dce-3857df385fd1)
+
+
 ## ▶️ Fullstack starten (optional in IntelliJ)
 
 1. Öffnen des Dropdown in der rechten oberen Ecke

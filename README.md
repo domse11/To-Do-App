@@ -18,3 +18,11 @@ Ziel: Aufgaben erfassen, verwalten und den Status ändern
 - 🎯 Spring Boot (Java 18+)
 - 🐘 PostgreSQL (via Docker)
 - 🐳 Docker & Docker Compose
+
+## ▶️ Fullstack starten (optional in IntelliJ)
+
+1. Öffnen des Dropdown in der rechten oberen Ecke
+2. Wähle: `Fullstack app (todoapp)`
+3. Klicke auf ▶ oder `Shift + F10`
+
+Damit starten Backend & Frontend gleichzeitig.

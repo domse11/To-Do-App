@@ -11,7 +11,7 @@ export const getTodos = () => axios.get<Todo[]>(API_BASE);
 export const addTodo = (todo: Partial<Todo>) => axios.post(API_BASE, todo);
 
 // Todo erledigt/unerledigt toggeln
-export const toggleTodo = (id: number) => axios.put(`${API_BASE}/${id}/toggle`);
+export const toggleTodo = (todo: Todo) => axios.put(`${API_BASE}/${todo.id}/toggle`, todo);
 
 // Todo bearbeiten
 export const updateTodo = (todo: Todo) => axios.put(`${API_BASE}/${todo.id}`, todo);

@@ -21,10 +21,12 @@ export default function App() {
         });
     };
 
-    const handleToggle = (id: number) => {
-        toggleTodo(id).then((res) => {
-            setTodos(todos.map((todo) => (todo.id === id ? res.data : todo)));
-        });
+    const handleToggle = (todo: Todo) => {
+        toggleTodo(todo)
+            .then((res) => {
+                setTodos(todos.map((t) => (t.id === res.data.id ? res.data : t)));
+            })
+            .catch(() => alert("Konnte Todo nicht aktualisieren. Bitte neu laden."));
     };
 
     const handleDelete = (id: number) => {

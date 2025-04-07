@@ -3,7 +3,7 @@ import { Todo } from "../../types/todo";
 
 interface Props {
     todos: Todo[];
-    onToggle: (id: number) => void;
+    onToggle: (todo: Todo) => void;
     onDelete: (id: number) => void;
     onEdit: (todo: Todo) => void;
     filter: "all" | "open" | "done";
@@ -26,7 +26,7 @@ export default function TodoList({ todos, onToggle, onDelete, onEdit, filter }: 
                 <TodoItem
                     key={todo.id}
                     todo={todo}
-                    onToggle={() => onToggle(todo.id)}
+                    onToggle={() => onToggle(todo)}
                     onDelete={() => onDelete(todo.id)}
                     onEdit={onEdit}
                 />

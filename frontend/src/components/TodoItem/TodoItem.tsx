@@ -1,21 +1,21 @@
-import {useState} from "react";
-import {Todo} from "../../types/todo";
+import { useState } from "react";
+import { Todo } from "../../types/todo";
 import "./TodoItem.css";
 
 interface Props {
     todo: Todo;
-    onToggle: () => void;
+    onToggle: (todo: Todo) => void;
     onDelete: () => void;
     onEdit: (todo: Todo) => void;
 }
 
-export default function TodoItem({todo, onToggle, onDelete, onEdit}: Props) {
+export default function TodoItem({ todo, onToggle, onDelete, onEdit }: Props) {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(todo.title);
 
     const handleSave = () => {
         if (editTitle.trim()) {
-            onEdit({...todo, title: editTitle});
+            onEdit({ ...todo, title: editTitle });
             setIsEditing(false);
         }
     };
@@ -26,7 +26,11 @@ export default function TodoItem({todo, onToggle, onDelete, onEdit}: Props) {
     };
 
     return (
-        <div className={`todo-item ${todo.done ? "done" : ""}`}>
+        <div
+            className={`todo-item ${todo.done ? "done" : ""}`}
+            onClick={() => !isEditing && onToggle(todo)}
+            onDoubleClick={() => !isEditing && setIsEditing(true)}
+        >
             {isEditing ? (
                 <>
                     <input
@@ -39,24 +43,49 @@ export default function TodoItem({todo, onToggle, onDelete, onEdit}: Props) {
                         autoFocus
                     />
                     <div>
-                        <button onClick={handleSave} title="Speichern">💾</button>
-                        <button onClick={handleCancel} title="Abbrechen">❌</button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleSave();
+                            }}
+                            title="Speichern"
+                        >
+                            💾
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleCancel();
+                            }}
+                            title="Abbrechen"
+                        >
+                            ❌
+                        </button>
                     </div>
                 </>
             ) : (
                 <>
+                    <span className="status-icon" title="Status">
+                        {todo.done ? "✅" : "🔵"}
+                    </span>
 
                     <span
-                        onClick={onToggle}
-                        onDoubleClick={() => setIsEditing(true)}
-                        title="Klicken zum Erledigen, Doppelklick zum Bearbeiten"
-                        style={{flex: 1, textAlign: "left", cursor: "pointer"}}
+                        style={{ flex: 1, textAlign: "left", cursor: "pointer" }}
+                        title="Doppelklick zum Bearbeiten"
                     >
-            {todo.title}
-          </span>
+                        {todo.title}
+                    </span>
 
                     <div>
-                        <button onClick={onDelete} title="Löschen">🗑️</button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onDelete();
+                            }}
+                            title="Löschen"
+                        >
+                            🗑️
+                        </button>
                     </div>
                 </>
             )}

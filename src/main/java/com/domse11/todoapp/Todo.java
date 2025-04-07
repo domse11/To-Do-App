@@ -1,9 +1,5 @@
 package com.domse11.todoapp;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Todo {
@@ -16,8 +12,10 @@ public class Todo {
 
     private boolean done;
 
-    public Todo() {
-    }
+    @Version
+    private Long version;
+
+    public Todo() {}
 
     public Todo(String title, boolean done) {
         this.title = title;
@@ -32,15 +30,23 @@ public class Todo {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public boolean isDone() {
         return done;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

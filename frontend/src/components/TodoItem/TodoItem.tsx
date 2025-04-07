@@ -2,7 +2,6 @@ import {useState} from "react";
 import {Todo} from "../../types/todo";
 import "./TodoItem.css";
 
-// Props, die die Komponente von außen bekommt
 interface Props {
     todo: Todo;
     onToggle: () => void;
@@ -11,8 +10,8 @@ interface Props {
 }
 
 export default function TodoItem({todo, onToggle, onDelete, onEdit}: Props) {
-    const [isEditing, setIsEditing] = useState(false); // Editiermodus?
-    const [editTitle, setEditTitle] = useState(todo.title); // Temporärer Titel
+    const [isEditing, setIsEditing] = useState(false);
+    const [editTitle, setEditTitle] = useState(todo.title);
 
     const handleSave = () => {
         if (editTitle.trim()) {
@@ -22,8 +21,8 @@ export default function TodoItem({todo, onToggle, onDelete, onEdit}: Props) {
     };
 
     const handleCancel = () => {
+        setEditTitle(todo.title);
         setIsEditing(false);
-        setEditTitle(todo.title); // Reset bei ESC
     };
 
     return (
@@ -39,15 +38,26 @@ export default function TodoItem({todo, onToggle, onDelete, onEdit}: Props) {
                         }}
                         autoFocus
                     />
-                    <button onClick={handleSave}>💾</button>
-                    <button onClick={handleCancel}>❌</button>
+                    <div>
+                        <button onClick={handleSave} title="Speichern">💾</button>
+                        <button onClick={handleCancel} title="Abbrechen">❌</button>
+                    </div>
                 </>
             ) : (
                 <>
-            <span onClick={onToggle} onDoubleClick={() => setIsEditing(true)}>
-        {todo.title}
-        </span>
-                    <button onClick={onDelete}>🗑️</button>
+
+                    <span
+                        onClick={onToggle}
+                        onDoubleClick={() => setIsEditing(true)}
+                        title="Klicken zum Erledigen, Doppelklick zum Bearbeiten"
+                        style={{flex: 1, textAlign: "left", cursor: "pointer"}}
+                    >
+            {todo.title}
+          </span>
+
+                    <div>
+                        <button onClick={onDelete} title="Löschen">🗑️</button>
+                    </div>
                 </>
             )}
         </div>

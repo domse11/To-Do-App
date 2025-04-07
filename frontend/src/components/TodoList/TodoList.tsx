@@ -10,24 +10,27 @@ interface Props {
 }
 
 export default function TodoList({ todos, onToggle, onDelete, onEdit, filter }: Props) {
-    // Filter anwenden
     const filteredTodos = todos.filter((todo) => {
         if (filter === "open") return !todo.done;
         if (filter === "done") return todo.done;
         return true;
     });
 
+    if (filteredTodos.length === 0) {
+        return <p style={{ color: "#888" }}>Keine Todos vorhanden.</p>;
+    }
+
     return (
         <div>
             {filteredTodos.map((todo) => (
-                    <TodoItem
-                        key={todo.id}
-                todo={todo}
-                onToggle={() => onToggle(todo.id)}
-    onDelete={() => onDelete(todo.id)}
-    onEdit={onEdit}
-    />
-))}
-    </div>
-);
+                <TodoItem
+                    key={todo.id}
+                    todo={todo}
+                    onToggle={() => onToggle(todo.id)}
+                    onDelete={() => onDelete(todo.id)}
+                    onEdit={onEdit}
+                />
+            ))}
+        </div>
+    );
 }

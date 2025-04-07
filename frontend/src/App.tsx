@@ -9,12 +9,10 @@ export default function App() {
     const [newTodo, setNewTodo] = useState("");
     const [filter, setFilter] = useState<"all" | "open" | "done">("all");
 
-    // Todos vom Backend laden
     useEffect(() => {
         getTodos().then((res) => setTodos(res.data));
     }, []);
 
-    // Neues Todo hinzufügen
     const handleAdd = () => {
         if (!newTodo.trim()) return;
         addTodo({ title: newTodo, done: false }).then((res) => {
@@ -23,49 +21,55 @@ export default function App() {
         });
     };
 
-    // Status ändern
     const handleToggle = (id: number) => {
         toggleTodo(id).then((res) => {
             setTodos(todos.map((todo) => (todo.id === id ? res.data : todo)));
         });
     };
 
-    // Todo löschen
     const handleDelete = (id: number) => {
         deleteTodo(id).then(() => {
             setTodos(todos.filter((todo) => todo.id !== id));
         });
     };
 
-    // Todo bearbeiten
     const handleEdit = (updated: Todo) => {
         updateTodo(updated).then((res) => {
             setTodos(todos.map((todo) => (todo.id === res.data.id ? res.data : todo)));
         });
     };
 
+    const filteredTodos = todos.filter((todo) => {
+        if (filter === "open") return !todo.done;
+        if (filter === "done") return todo.done;
+        return true;
+    });
+
     return (
         <div className="App">
             <h1>📝 ToDo App</h1>
-
-            <div style={{ marginBottom: "1rem" }}>
+            <div className="todo-input">
                 <input
                     type="text"
                     value={newTodo}
                     onChange={(e) => setNewTodo(e.target.value)}
                     placeholder="Neues Todo..."
                 />
-                <button onClick={handleAdd}>➕</button>
+                <button className="add-btn" onClick={handleAdd} title="Todo hinzufügen">
+                    +
+                </button>
             </div>
 
-            <div style={{ marginBottom: "1rem" }}>
-                <button onClick={() => setFilter("all")} disabled={filter === "all"}>Alle</button>
-                <button onClick={() => setFilter("open")} disabled={filter === "open"}>Offen</button>
-                <button onClick={() => setFilter("done")} disabled={filter === "done"}>Erledigt</button>
+            <p className="hint">🖱️ Doppelklick auf ein Todo, um es zu bearbeiten</p>
+
+            <div className="filter-buttons">
+                <button onClick={() => setFilter("all")} disabled={filter === "all"}>🔵 Alle</button>
+                <button onClick={() => setFilter("open")} disabled={filter === "open"}>⚪ Offen</button>
+                <button onClick={() => setFilter("done")} disabled={filter === "done"}>✅ Erledigt</button>
             </div>
 
             <TodoList
-                todos={todos}
+                todos={filteredTodos}
                 onToggle={handleToggle}
                 onDelete={handleDelete}
                 onEdit={handleEdit}

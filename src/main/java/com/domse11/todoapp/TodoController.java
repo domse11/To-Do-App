@@ -27,7 +27,7 @@ public class TodoController {
         return repository.save(todo);
     }
 
-    @PutMapping("/api/todos/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody Todo updated) {
         return repository.findById(id)
                 .map(todo -> {
@@ -39,7 +39,16 @@ public class TodoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    @PutMapping("/{id}/toggle")
+    public ResponseEntity<Todo> toggleTodo(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(todo -> {
+                    todo.setDone(!todo.isDone());
+                    repository.save(todo);
+                    return ResponseEntity.ok(todo);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @DeleteMapping("/{id}")
     public void deleteTodo(@PathVariable Long id) {

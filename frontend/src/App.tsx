@@ -1,83 +1,76 @@
-import React, { useEffect, useState } from "react";
-import { getTodos, addTodo, deleteTodo } from "./api";
+import { useEffect, useState } from "react";
+import "./App.css";
+import { Todo } from "./types/todo";
+import { getTodos, addTodo, deleteTodo, toggleTodo, updateTodo } from "./api/todos";
+import TodoList from "./components/TodoList/TodoList";
 
-type Todo = {
-    id: number;
-    title: string;
-    done: boolean;
-};
-
-function App() {
+export default function App() {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [newTodo, setNewTodo] = useState("");
+    const [filter, setFilter] = useState<"all" | "open" | "done">("all");
 
     // Todos vom Backend laden
     useEffect(() => {
-        getTodos()
-            .then((res: { data: Todo[] }) => setTodos(res.data))
-            .catch((err) => console.error("Fehler beim Laden der Todos:", err));
+        getTodos().then((res) => setTodos(res.data));
     }, []);
 
     // Neues Todo hinzufügen
     const handleAdd = () => {
         if (!newTodo.trim()) return;
+        addTodo({ title: newTodo, done: false }).then((res) => {
+            setTodos([...todos, res.data]);
+            setNewTodo("");
+        });
+    };
 
-        addTodo({ title: newTodo, done: false })
-            .then((res: { data: Todo }) => {
-                setTodos([...todos, res.data]);
-                setNewTodo("");
-            })
-            .catch((err) => console.error("Fehler beim Hinzufügen:", err));
+    // Status ändern
+    const handleToggle = (id: number) => {
+        toggleTodo(id).then((res) => {
+            setTodos(todos.map((todo) => (todo.id === id ? res.data : todo)));
+        });
     };
 
     // Todo löschen
     const handleDelete = (id: number) => {
-        deleteTodo(id)
-            .then(() => {
-                setTodos(todos.filter((todo) => todo.id !== id));
-            })
-            .catch((err) => console.error("Fehler beim Löschen:", err));
+        deleteTodo(id).then(() => {
+            setTodos(todos.filter((todo) => todo.id !== id));
+        });
+    };
+
+    // Todo bearbeiten
+    const handleEdit = (updated: Todo) => {
+        updateTodo(updated).then((res) => {
+            setTodos(todos.map((todo) => (todo.id === res.data.id ? res.data : todo)));
+        });
     };
 
     return (
-        <div style={{ padding: "2rem", maxWidth: "600px", margin: "auto" }}>
-            <h1>To-Do App</h1>
+        <div className="App">
+            <h1>📝 ToDo App</h1>
 
             <div style={{ marginBottom: "1rem" }}>
                 <input
+                    type="text"
                     value={newTodo}
                     onChange={(e) => setNewTodo(e.target.value)}
-                    placeholder="Neues Todo eingeben"
-                    style={{ padding: "0.5rem", width: "70%" }}
+                    placeholder="Neues Todo..."
                 />
-                <button onClick={handleAdd} style={{ marginLeft: "1rem", padding: "0.5rem 1rem" }}>
-                    Hinzufügen
-                </button>
+                <button onClick={handleAdd}>➕</button>
             </div>
 
-            <ul style={{ listStyle: "none", padding: 0 }}>
-                {todos.map((todo) => (
-                    <li
-                        key={todo.id}
-                        style={{
-                            background: "#f0f0f0",
-                            marginBottom: "0.5rem",
-                            padding: "0.75rem",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            borderRadius: "5px"
-                        }}
-                    >
-                        <span>{todo.title}</span>
-                        <button onClick={() => handleDelete(todo.id)} style={{ color: "red" }}>
-                            Löschen
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            <div style={{ marginBottom: "1rem" }}>
+                <button onClick={() => setFilter("all")} disabled={filter === "all"}>Alle</button>
+                <button onClick={() => setFilter("open")} disabled={filter === "open"}>Offen</button>
+                <button onClick={() => setFilter("done")} disabled={filter === "done"}>Erledigt</button>
+            </div>
+
+            <TodoList
+                todos={todos}
+                onToggle={handleToggle}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                filter={filter}
+            />
         </div>
     );
 }
-
-export default App;

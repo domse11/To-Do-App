@@ -26,9 +26,11 @@ public class TodoController {
     }
 
     @PostMapping
-    public Todo create(@RequestBody Todo todo) {
-        return repo.save(todo);
+    public ResponseEntity<Todo> create(@RequestBody Todo todo) {
+        Todo saved = repo.save(todo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Todo todo) {
@@ -49,11 +51,10 @@ public class TodoController {
     }
 
     @PutMapping("/{id}/toggle")
-    public ResponseEntity<?> toggleTodo(@PathVariable Long id, @RequestBody Todo todo) {
+    public ResponseEntity<?> toggleTodo(@PathVariable Long id) {
         return repo.findById(id)
                 .map(existing -> {
                     existing.setDone(!existing.isDone());
-                    existing.setVersion(todo.getVersion());
                     try {
                         Todo updated = repo.save(existing);
                         return ResponseEntity.ok(updated);
@@ -64,6 +65,7 @@ public class TodoController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTodo(@PathVariable Long id) {

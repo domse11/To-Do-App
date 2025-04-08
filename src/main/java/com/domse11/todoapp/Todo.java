@@ -30,6 +30,10 @@ public class Todo {
         return title;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public boolean isDone() {
         return done;
     }
